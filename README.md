@@ -1,6 +1,8 @@
 # Converse development environment for Docker
 
-This environment was set up for frontend development purpose on the standard Converse environment. It has been tested against version 4.2 of Converse.
+This environment was set up for frontend development purpose on the standard Converse environment. That set up gives you access to a local repository that is a volume mounted by the Docker container on your local machine. You can then use your usual IDE to perform changes and test them against the Converse installation on Docker.
+
+It has been tested against version 4.2 of Converse.
 
 ## Requirements
 * Docker needs to be installed on the machine that will run this environment
