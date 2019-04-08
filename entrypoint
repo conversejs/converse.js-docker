@@ -1,0 +1,4 @@
+#!/bin/bash
+
+nginx
+twistd --nodaemon --logfile=- punjab

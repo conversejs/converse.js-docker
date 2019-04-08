@@ -1,0 +1,19 @@
+version: '3.2'
+
+services:
+  conversejs:
+    environment:
+      - version=v4.2.0
+    container_name: container-conversejs
+    build: .
+    volumes:
+    - resources:/usr/share/nginx/
+    ports:
+    - 381:80
+volumes:
+  resources:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /full/path/to/converse-nginx/
