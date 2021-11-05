@@ -3,7 +3,7 @@ version: '3.2'
 services:
   conversejs:
     environment:
-      - version=v4.2.0
+      - version=v8.0.1
     container_name: container-conversejs
     build: .
     volumes:

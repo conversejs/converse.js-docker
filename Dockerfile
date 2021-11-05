@@ -2,15 +2,15 @@ FROM nginx
 
 #Setting up Dockerfile to install the version of Converse to retrieve
 
-ENV CONVERSEJS_VERSION v4.2.0
-ENV CONVERSEJS_VERSION_S 4.2.0
+ENV CONVERSEJS_VERSION v8.0.1
+ENV CONVERSEJS_VERSION_S 8.0.1
 
 # Updating package lists then install Node.js and NPM for development purpose
 
 RUN apt-get update -y
 RUN apt-get install -y curl python-twisted python-openssl sudo unzip git apt-utils 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-RUN sudo apt-get install -y npm
+RUN curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+RUN sudo apt-get install -y nodejs
 RUN sudo apt-get install -y build-essential
 
 #Retrieving the version of Converse setup earlier
