@@ -14,7 +14,7 @@ LABEL org.label-schema.url="https://conversejs.org/"
 LABEL org.label-schema.application="converse.js"
 LABEL org.label-schema.build-date=$BUILD_DATE
 LABEL org.label-schema.version=$BUILD_VERSION
-LABEL org.opencontainers.image.source="https://github.com/f4bio/movim"
+LABEL org.opencontainers.image.source="https://github.com/f4bio/converse.js"
 
 WORKDIR /workspace
 
