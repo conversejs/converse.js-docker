@@ -1,47 +1,50 @@
-FROM nginx
+FROM nginx:latest
 
-#Setting up Dockerfile to install the version of Converse to retrieve
+LABEL maintainer="iam@f4b.io"
 
-ENV CONVERSEJS_VERSION v8.0.1
-ENV CONVERSEJS_VERSION_S 8.0.1
+ARG BUILD_VERSION
+ARG BUILD_DATE
+ARG DEBIAN_FRONTEND=noninteractive
+ARG CONVERSEJS_VERSION=9.1.0
 
-# Updating package lists then install Node.js and NPM for development purpose
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.name="converse.js/converse.js"
+LABEL org.label-schema.description="messaging freedom"
+LABEL org.label-schema.url="https://conversejs.org/"
+LABEL org.label-schema.application="converse.js"
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.version=$BUILD_VERSION
 
-RUN apt-get update -y
-RUN apt-get install -y curl python-twisted python-openssl sudo unzip git apt-utils 
-RUN curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-RUN sudo apt-get install -y nodejs
-RUN sudo apt-get install -y build-essential
+WORKDIR /workspace
 
-#Retrieving the version of Converse setup earlier
+# # Replace nginx default configuration file
+COPY default.conf /etc/nginx/conf.d/default.conf
 
-RUN curl -L -O https://github.com/conversejs/converse.js/archive/${CONVERSEJS_VERSION}.zip \
-    && unzip ${CONVERSEJS_VERSION}.zip \
-    && rm -f ${CONVERSEJS_VERSION}.zip
+# Update deps, install required & additional libraries
+RUN apt-get --yes update
+RUN apt-get --yes install \
+  software-properties-common gnupg gosu curl ca-certificates zip unzip git
+RUN apt-get --yes install python3-dev python3-twisted python3-openssl
 
-#Moving Converse content in the correct directory and making the teamchat page the main one
-
-RUN mv -v /converse.js-${CONVERSEJS_VERSION_S}/* /usr/share/nginx/html/
-RUN rm -rf /converse.js-${CONVERSEJS_VERSION_S}/
-RUN cd /usr/share/nginx/html/ && make dev 
-RUN mv /usr/share/nginx/html/index.html /usr/share/nginx/html/index_bak.html \
-    && cp /usr/share/nginx/html/fullscreen.html /usr/share/nginx/html/index.html 
-
+RUN curl -sLO \
+  https://github.com/conversejs/converse.js/releases/download/v$CONVERSEJS_VERSION/converse.js-$CONVERSEJS_VERSION.tgz
+RUN tar xzf converse.js-$CONVERSEJS_VERSION.tgz
+RUN mv package/* /usr/share/nginx/html/
+RUN curl -sL \
+  -o /usr/share/nginx/html/index.html \
+  https://raw.githubusercontent.com/conversejs/converse.js/master/fullscreen.html
 # Install Punjab as a BOSH connection manager
+# RUN add-apt-repository ppa:karjala/jabber
+# RUN apt-get --yes install punjab
+RUN curl -sL -O https://github.com/twonds/punjab/archive/master.zip \
+  && unzip master.zip \
+  && cd punjab-master \
+  && python3 setup.py install
 
-RUN curl -L -O https://github.com/twonds/punjab/archive/master.zip \
-    && unzip master.zip \
-    && cd punjab-master \
-    && python setup.py install \
-    && rm -rf *
+# # Setup entrypoint to setup commands to execute when the container is run
+COPY ./start-punjab.sh /docker-entrypoint.d/90-start-punjab.sh
 
-# Replace nginx default configuration file
+RUN rm -rf /workspace
 
-RUN rm /etc/nginx/conf.d/*
-COPY site.conf /etc/nginx/conf.d/
-
-# Setup entrypoint to setup commands to execute when the container is run
-
-COPY entrypoint /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint
-ENTRYPOINT /usr/local/bin/entrypoint
+# WORKDIR /usr/share/nginx/html/
+# CMD [ "/bin/bash" ]
