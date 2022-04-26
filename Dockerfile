@@ -7,13 +7,14 @@ ARG BUILD_DATE
 ARG DEBIAN_FRONTEND=noninteractive
 ARG CONVERSEJS_VERSION=9.1.0
 
-LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.schema-version="9.1.0"
 LABEL org.label-schema.name="converse.js/converse.js"
 LABEL org.label-schema.description="messaging freedom"
 LABEL org.label-schema.url="https://conversejs.org/"
 LABEL org.label-schema.application="converse.js"
 LABEL org.label-schema.build-date=$BUILD_DATE
 LABEL org.label-schema.version=$BUILD_VERSION
+LABEL org.opencontainers.image.source="https://github.com/f4bio/movim"
 
 WORKDIR /workspace
 
@@ -36,7 +37,7 @@ RUN curl -sL \
 # Install Punjab as a BOSH connection manager
 # RUN add-apt-repository ppa:karjala/jabber
 # RUN apt-get --yes install punjab
-RUN curl -sL -O https://github.com/twonds/punjab/archive/master.zip \
+RUN curl -sLO https://github.com/twonds/punjab/archive/master.zip \
   && unzip master.zip \
   && cd punjab-master \
   && python3 setup.py install
@@ -45,6 +46,3 @@ RUN curl -sL -O https://github.com/twonds/punjab/archive/master.zip \
 COPY ./start-punjab.sh /docker-entrypoint.d/90-start-punjab.sh
 
 RUN rm -rf /workspace
-
-# WORKDIR /usr/share/nginx/html/
-# CMD [ "/bin/bash" ]
