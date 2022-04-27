@@ -44,3 +44,7 @@ docker buildx build \
   --tag conversejs/converse.js:latest \
   .
 ```
+
+## Additional Resources / Information
+
+* website shown at `localhost:381` is based on the original [fullscreen.html](https://raw.githubusercontent.com/conversejs/converse.js/v9.1.0/fullscreen.html) - thanks [@jcbrand](https://github.com/conversejs/converse.js-docker/pull/2#discussion_r859454722)!
